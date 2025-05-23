@@ -33,6 +33,7 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'security/ftp_security_rules.xml',
         'views/ftp_setting_views.xml',
         'data/ftp_data.xml'
     ],

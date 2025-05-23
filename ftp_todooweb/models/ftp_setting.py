@@ -49,6 +49,7 @@ class FtpSetting(models.Model):
         ('other', 'SSL')
     ], string='Type Encrypt', index=True, default='other')
     active = fields.Boolean('Active')
+    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
 
     def test_connection(self):
         for obj_connect in self:
@@ -159,11 +160,14 @@ class AttachmentFilesSend(models.Model):
         ('send', 'Send'),
     ], string='Status', index=True, defaulf='draft')
     ribbon_message = fields.Char('Ribbon message')
+    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+
 
     @api.model
     def create(self, vals):
         request = super(AttachmentFilesSend, self).create(vals)
         if request.name == "New Attachments":
+            # The sequence generation will consider the company if `company_id` is True in ftp_data.xml for the sequence.
             sequence_name = self.env['ir.sequence'].next_by_code('attachment.files.send') or "New Attachments"
             request.name = 'FTP' + sequence_name
             request.state = 'draft'
@@ -182,9 +186,14 @@ class AttachmentFilesSend(models.Model):
         for obj_ftp in self:
             if obj_ftp.attachment_ids:
                 files = obj_ftp.attachment_ids
-                obj_connection_id = self.env['ftp.setting'].search([('active', '=', True)])
+                # Explicitly search for FTP settings associated with the current attachment's company.
+                obj_connection_id = self.env['ftp.setting'].search([
+                    ('active', '=', True),
+                    ('company_id', '=', obj_ftp.company_id.id) # Modified: Filter by company_id
+                ], limit=1) # Added limit=1 to ensure only one setting is picked if multiple active ones exist.
+
                 if obj_connection_id:
-                    obj_connect = obj_connection_id[0]
+                    obj_connect = obj_connection_id
                     url_output = obj_connect.url_output
                     url_server_output = obj_connect.url_server_output
                     # create url o read
@@ -218,8 +227,8 @@ class AttachmentFilesSend(models.Model):
                         _logger.warning('FTP connection failed.')
                         raise UserError(_('FTP connection failed.'))
                 else:
-                    _logger.warning('There is no FTP server configured.')
-                    raise UserError(_('There is no FTP server configured.'))
+                    _logger.warning('There is no active FTP server configured for this company.')
+                    raise UserError(_('There is no active FTP server configured for this company.'))
             else:
                 _logger.warning('Attachment(s) required.')
                 raise UserError(_('Attachment(s) required.'))

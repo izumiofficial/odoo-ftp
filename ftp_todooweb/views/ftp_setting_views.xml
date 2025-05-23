@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- View Form Settings -->
         <record model="ir.ui.view" id="ftp_setting_form">
             <field name="name">ftp.setting.form</field>
             <field name="model">ftp.setting</field>
@@ -23,6 +22,7 @@
                                 <field name="secret" password="True"/>
                                 <field name="type_encrypt"/>
                                 <field name="active"/>
+                                <field name="company_id" groups="base.group_multi_company" readonly="1" force_save="1"/>
                             </group>
                             <group string="Server routes">
                                 <field name="url_output"/>
@@ -33,7 +33,6 @@
             </field>
         </record>
 
-        <!-- View Tree Settings -->
         <record model="ir.ui.view" id="ftp_setting_tree">
             <field name="name">ftp.setting.tree</field>
             <field name="model">ftp.setting</field>
@@ -46,6 +45,7 @@
                     <field name="url_server_output"/>
                     <field name="active"/>
                     <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
                 </list>
             </field>
         </record>
@@ -60,7 +60,6 @@
                           (0, 0, {'view_mode': 'form', 'view_id': ref('ftp_setting_form')})]"/>
         </record>
 
-        <!-- View Form attachment.files.send -->
         <record model="ir.ui.view" id="attachment_files_send_form">
             <field name="name">attachment.files.send.form</field>
             <field name="model">attachment.files.send</field>
@@ -79,6 +78,7 @@
                             <group name="first_group">
                                 <field name="create_date" string="Create Date" readonly="1"/>
                                 <field name="create_uid" string="Create ID" readonly="1"/>
+                                <field name="company_id" groups="base.group_multi_company" readonly="1" force_save="1"/>
                             </group>
                         </group>
                         <notebook>
@@ -110,7 +110,6 @@
             </field>
         </record>
 
-        <!-- View Tree attachment.files.send -->
         <record model="ir.ui.view" id="attachment_files_send_tree">
             <field name="name">attachment.files.send.tree</field>
             <field name="model">attachment.files.send</field>
@@ -121,11 +120,11 @@
                     <field name="create_uid"/>
                     <field name="write_uid"/>
                     <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
                 </list>
             </field>
         </record>
 
-        <!-- View Search attachment.files.send -->
         <record id="attachment_files_send_search" model="ir.ui.view">
           <field name="name">attachment.files.send.search</field>
           <field name="model">attachment.files.send</field>
@@ -139,6 +138,7 @@
                 <filter string="New" domain="[('state', '=', 'draft')]" name="modelnew"/>
                 <filter string="Pending sent" domain="[('state', '=', 'pend')]" name="modelsent"/>
                 <filter string="Send" domain="[('state', '=', 'send')]" name="modelsend"/>
+                <field name="company_id" groups="base.group_multi_company"/>
             </search>
           </field>
         </record>
@@ -154,7 +154,6 @@
             <field name="search_view_id" ref="attachment_files_send_search"/>
         </record>
 
-        <!-- Top menu item -->
         <menuitem id='ftp_menu_principal' name='FTP Files' sequence="10" web_icon="ftp_todooweb,static/description/icon.png">
             <menuitem name="FTP Files" id="ftp_menu_send_principal_item" sequence="1">
                 <menuitem name="FTP Files" id="menu_send_principal_item_1" action="action_attachment_files_send" sequence="1"/>

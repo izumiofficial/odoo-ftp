@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="ftp_setting_company_rule" model="ir.rule">
+            <field name="name">FTP Setting Multi-Company Rule</field>
+            <field name="model_id" ref="ftp_todooweb.model_ftp_setting"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">	['|',('company_id','=',False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="attachment_files_send_company_rule" model="ir.rule">
+            <field name="name">Attachment Files Send Multi-Company Rule</field>
+            <field name="model_id" ref="ftp_todooweb.model_attachment_files_send"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">	['|',('company_id','=',False), ('company_id', 'in', company_ids)]</field>
+        </record>
+    </data>
+</odoo>
